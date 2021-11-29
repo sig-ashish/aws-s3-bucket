@@ -1,0 +1,91 @@
+
+
+{% extends "layout.html" %} 
+{% block content %}
+     <div class="nabar"> 
+      <h3>Folders</h3>
+     </div>
+      <div class="navbar">
+        <div>
+          <form action="{{ url_for('buckets') }}" method="GET" enctype="multipart/form-data">
+            <button class="btn btn-sm btn-primary fixed-left">Back</button>
+          </form>
+        </div>
+
+        <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-primary fixed-right"  aria-expanded="false"><a  data-bs-toggle="modal" data-bs-target="#createfolder">Create folder</a>
+            </button>
+        </div>
+      </div>
+     </div>
+    <table class="table table-bordered border-primary">
+      <thead>
+        <tr>
+          <th class="table-light" scope="col">Folder Name</th>
+          <th class="table-light" scope="col">Open</th>
+          <th class="table-light" scope="col">Remove</th>
+        </tr>
+      </thead>
+      {%if  folders_list[0] != None %}
+      {% for folder in folders_list %}
+      <tbody>
+        <tr>
+          <td class="table-light">{{folder[:-1]}}</td>
+          <td class="table-light"><a href="{{ url_for('files', bucket_name=bucket_name,folder_name=folder) }}" class="btn btn-sm btn-primary">Open</a></td>
+          <td class="table-light" >
+              <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletemodal-{{ loop.index }}" >X</button>
+            <div class="modal fade" id="deletemodal-{{ loop.index }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Delete</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body dropdown_model">
+                  <form class="upload-form" action="{{ url_for('deletefolder')}}" method="POST" enctype="multipart/form-data">
+                    <p>Are sure you want delete : {{ folder }}</p>
+                    <input type="hidden" value="{{ bucket_name }}" name="bucket_name"/>
+                    <input type="hidden" value="{{ folder }}" name="folder_name"/>
+                  <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                  </div>
+              </form>
+              </div>
+              </div>
+              </div>
+          </div> 
+        </td>
+        </tr>
+        <!-- moder for creating directory -->
+        <div class="modal fade" id="createfolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Create a folder</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body dropdown_model">
+              <form class="upload-form" action="{{ url_for('createfolder') }}" method="POST" enctype="multipart/form-data">
+              <input type="hidden"  value="{{bucket_name}}" name = "bucket_name" />
+              <label>Folder name</label>
+              <input type="text" placeholder="Enter new folder name" value="" name = "folder_name" required />
+              <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-outline-dark">Create</button>
+              </div>
+          </form>
+          </div>
+          </div>
+          </div>
+      </div> 
+       {%endfor%}
+      {%else%}
+
+      </tbody>
+    </table>
+      <div class= "container">
+        <h1>No Contents</h1> 
+      </div>          
+        {%endif%}        
+{% endblock%}
